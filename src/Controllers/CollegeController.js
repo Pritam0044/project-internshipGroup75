@@ -87,9 +87,9 @@ const getCollegeDetails = async function (req, res) {
       interests: internData,
     };
 
-    return res.status(200).send({ data: getData });
+    return res.status(200).send({status:true, data: getData });
   } catch (err) {
-    return res.status(500).send({ message: err.message });
+    return res.status(500).send({status:false, message: err.message });
   }
 };
 
