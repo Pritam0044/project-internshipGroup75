@@ -4,11 +4,17 @@ const InternModel = require("../Models/InternModel");
 const college = async function (req, res) {
   try {
     let body = req.body;
+
+    let data = await CollegeModel.find(body)
+    if (data.length!=0){
+       return res.status(400).send({status:false, message:"Data already exist."})
+    }
+    
     if (!body.name) {
       return res.status(400).send({ status: false, message: "Provide name" });
     }
 
-    if (!/^([a-zA-Z]+)$/.test(body.name)) {
+    if (!/^([a-zA-Z]+)$/.test(body.name.trim())) {
       return res
         .status(401)
         .send({ status: false, msg: "Please enter a valid name" });
@@ -31,7 +37,7 @@ const college = async function (req, res) {
 
     if (
       !/^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?$/.test(
-        body.logoLink
+        body.logoLink.trim()
       )
     ) {
       return res
@@ -39,10 +45,7 @@ const college = async function (req, res) {
         .send({ status: false, message: "Please enter a valid logoLink" });
     }
 
-    let data = await CollegeModel.find(body)
-    if (data.length!=0){
-       return res.status(400).send({status:false, message:"Data already exist."})
-    }
+    
 
     let collegeData = await CollegeModel.create(body) 
     let name = collegeData.name;
