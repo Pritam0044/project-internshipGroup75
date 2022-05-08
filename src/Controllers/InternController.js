@@ -65,6 +65,7 @@ const intern = async function (req, res) {
     }
     
     let internData = await internModel.create({name:body.name, email:body.email, mobile:body.mobile, collegeId:collegeData[0]});
+    
     let name = internData.name;
     let email = internData.email;
     let mobile = internData.mobile;

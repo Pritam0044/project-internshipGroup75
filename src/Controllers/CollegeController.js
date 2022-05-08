@@ -5,18 +5,15 @@ const college = async function (req, res) {
   try {
     let body = req.body;
 
-    let data = await CollegeModel.find(body)
-    if (data.length!=0){
-       return res.status(400).send({status:false, message:"Data already exist."})
-    }
-    
+   
+
     if (!body.name) {
       return res.status(400).send({ status: false, message: "Provide name" });
     }
 
     if (!/^([a-zA-Z]+)$/.test(body.name.trim())) {
       return res
-        .status(401)
+        .status(400)
         .send({ status: false, msg: "Please enter a valid name" });
     }
     if (!body.fullName) {
@@ -41,23 +38,33 @@ const college = async function (req, res) {
       )
     ) {
       return res
-        .status(401)
+        .status(400)
         .send({ status: false, message: "Please enter a valid logoLink" });
+    }
+    let data = await CollegeModel.find(body)
+    if (data.length!=0){
+       return res.status(400).send({status:false, message:"Data already exist."})
     }
 
     
 
     let collegeData = await CollegeModel.create(body) 
+
+
     let name = collegeData.name;
     let fullName = collegeData.fullName;
     let logoLink = collegeData.logoLink;
     let isDeleted = collegeData.isDeleted;
+
+
     let allData = {isDeleted,name,fullName,logoLink}
     res.status(201).send({status:true,data:allData});
   } catch (err) {
     res.status(500).send({ status: false, Error: err.message });
   }
 };
+
+
 
 const getCollegeDetails = async function (req, res) {
   try {
@@ -70,7 +77,7 @@ const getCollegeDetails = async function (req, res) {
     if (!details) {
       return res
         .status(400)
-        .send({ status: false, message: "Details  is not present " });
+        .send({ status: false, message: "College is not present " });
     }
 
     const internData = await InternModel.find({
@@ -87,10 +94,10 @@ const getCollegeDetails = async function (req, res) {
       name: details.name,
       fullName: details.fullName,
       logoLink: details.logoLink,
-      interests: internData,
+      interns: internData,
     };
 
-    return res.status(200).send({status:true, data: getData });
+    return res.status(200).send({status:true,msg: "succesful", data: getData });
   } catch (err) {
     return res.status(500).send({status:false, message: err.message });
   }
