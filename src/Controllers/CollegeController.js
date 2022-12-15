@@ -5,8 +5,6 @@ const college = async function (req, res) {
   try {
     let body = req.body;
 
-   
-
     if (!body.name) {
       return res.status(400).send({ status: false, message: "Provide name" });
     }
@@ -17,7 +15,9 @@ const college = async function (req, res) {
         .send({ status: false, msg: "Please enter a valid name" });
     }
     if (!body.fullName) {
-      return res.status(400).send({ status: false, message: "Provide fullName" });
+      return res
+        .status(400)
+        .send({ status: false, message: "Provide fullName" });
     }
 
     if (body.fullName.length == 0 || Object.keys(body.fullName).length == 0) {
@@ -26,10 +26,10 @@ const college = async function (req, res) {
         .send({ status: false, message: "Provide valid fullName" });
     }
 
-  
-
     if (!body.logoLink) {
-      return res.status(400).send({ status: false, message: "Provide logoLink" });
+      return res
+        .status(400)
+        .send({ status: false, message: "Provide logoLink" });
     }
 
     if (
@@ -41,39 +41,34 @@ const college = async function (req, res) {
         .status(400)
         .send({ status: false, message: "Please enter a valid logoLink" });
     }
-    let data = await CollegeModel.find(body)
-    if (data.length!=0){
-       return res.status(400).send({status:false, message:"Data already exist."})
+    let data = await CollegeModel.find(body);
+    if (data.length != 0) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Data already exist." });
     }
 
-    
-
-    let collegeData = await CollegeModel.create(body) 
-
+    let collegeData = await CollegeModel.create(body);
 
     let name = collegeData.name;
     let fullName = collegeData.fullName;
     let logoLink = collegeData.logoLink;
     let isDeleted = collegeData.isDeleted;
 
-
-    let allData = {isDeleted,name,fullName,logoLink}
-    res.status(201).send({status:true,data:allData});
+    let allData = { isDeleted, name, fullName, logoLink };
+    res.status(201).send({ status: true, data: allData });
   } catch (err) {
     res.status(500).send({ status: false, Error: err.message });
   }
 };
 
-
-
 const getCollegeDetails = async function (req, res) {
   try {
-    const data = req.query.collegeName;
+    const { name } = req.query;
     const details = await CollegeModel.findOne({
-      name: data,
+      name: name,
       isDeleted: false,
     });
-    //   console.log(details)
     if (!details) {
       return res
         .status(400)
@@ -84,7 +79,6 @@ const getCollegeDetails = async function (req, res) {
       collegeId: details._id,
       isDeleted: false,
     }).select({ name: true, email: true, mobile: true });
-    //   console.log(internData)
     if (!internData) {
       return res
         .status(400)
@@ -97,9 +91,11 @@ const getCollegeDetails = async function (req, res) {
       interns: internData,
     };
 
-    return res.status(200).send({status:true,msg: "succesful", data: getData });
+    return res
+      .status(200)
+      .send({ status: true, msg: "succesful", data: getData });
   } catch (err) {
-    return res.status(500).send({status:false, message: err.message });
+    return res.status(500).send({ status: false, message: err.message });
   }
 };
 
